@@ -1,0 +1,7 @@
+[rules]
+# Values are ignore, warn, error
+division-by-zero="error"
+possibly-missing-import="error"
+possibly-unresolved-reference="error"
+unsupported-dynamic-base="ignore" # Unsupported by TY
+unresolved-import="ignore"
