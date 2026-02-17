@@ -1,2 +1,4 @@
-select=["ALL"]
-ignore=["INP001","D"]
+[lint]
+select = ["ALL"]
+ignore = ["D", "T201", "COM812","INP001","ERA001"]
+
