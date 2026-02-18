@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 
 import azure.functions as func
 import requests
@@ -12,6 +14,25 @@ QUEUE_NAME: str = "mail-queue"
 AZURE_CLIENT_ID: str | None = os.getenv("AZURE_CLIENT_ID")
 SEND_FROM: str | None = os.getenv("SEND_FROM")
 SEND_TO: str = "curtis.turner@landregistry.gov.uk"
+
+
+# Configure Logger
+def configure_logger() -> None:
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s ")
+
+    # File Handler - Do we need on Function App?
+    file_handler = logging.FileHandler("email.log")
+    file_handler.setFormatter(formatter)
+
+    # Stream Handler
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
 
 
 # Bearer token helper
@@ -46,6 +67,7 @@ app = func.FunctionApp()
 @app.function_name(name="EmailFunc")
 @app.queue_trigger(arg_name="msg", queue_name=QUEUE_NAME, connection="QueueConn")
 def main(msg: func.QueueMessage) -> None:
+    configure_logger()
     access_token = get_bearer_token(
         AZURE_CLIENT_ID, "https://graph.microsoft.com/.default"
     )
